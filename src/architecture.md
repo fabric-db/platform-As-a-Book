@@ -16,7 +16,7 @@ Runtime Layer
   -> Fabric, agents, services, events, operators
 
 Store Gate Layer
-  -> AnyDB, AnyData, agent state, box records, evidence records
+  -> AnyDB single store, multi-door AnyData, agent state, box records, evidence records
 
 Platform Operations Layer
   -> Coolify, Docker, Compose, domains, SSL, deploys, rollback
@@ -64,9 +64,9 @@ For Fabric DB, the runtime includes data fabric, box model, agent lifecycle, ide
 
 The store gate layer accepts, validates, and stores platform facts that must survive a deployment.
 
-AnyDB is the named store contract for this layer. In the default Coolify deployment profile, AnyDB is backed by SurrealDB, but the platform-facing service name remains AnyDB.
+AnyDB is the named store contract and single substrate for this layer. In the default Coolify deployment profile, AnyDB is backed by SurrealDB, but the platform-facing service name remains AnyDB.
 
-AnyData is the governed envelope that enters at the gate. AnyDB stores AnyData, agent state, box records, runtime evidence, deployment evidence, and governed data snapshots.
+AnyData is the governed multivariate envelope that enters at the gate through many doors. AnyDB stores AnyData, agent state, box records, runtime evidence, deployment evidence, and governed data snapshots as one store.
 
 ## Platform Operations Layer
 
@@ -79,7 +79,7 @@ The rule is:
 ```text
 Coolify runs platform services.
 AnyData enters at the gate.
-AnyDB stores platform state at the gate.
+AnyDB stores platform state at the gate as one store.
 Fabric gives platform state meaning.
 AGenNext governs agent behavior.
 The book gates the release.
