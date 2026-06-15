@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Coolify Gate Handoff",
+  "type": "object",
+  "required": [
+    "id",
+    "kind",
+    "version",
+    "gate",
+    "handoff",
+    "required_inputs",
+    "required_runtime_env",
+    "required_evidence",
+    "store",
+    "ledger",
+    "doors"
+  ],
+  "properties": {
+    "id": { "type": "string" },
+    "kind": { "const": "coolify.gate.handoff" },
+    "version": { "type": "string" },
+    "gate": { "const": "release-gate" },
+    "handoff": {
+      "type": "object",
+      "required": ["from", "to", "mode", "status"],
+      "properties": {
+        "from": { "type": "string" },
+        "to": { "const": "coolify" },
+        "mode": { "const": "env-configured-docker-compose" },
+        "status": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "required_inputs": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string" }
+    },
+    "required_runtime_env": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string" }
+    },
+    "required_evidence": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string" }
+    },
+    "store": { "const": "anydb" },
+    "ledger": { "const": "bookkeeper" },
+    "doors": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string" }
+    }
+  },
+  "additionalProperties": false
+}
