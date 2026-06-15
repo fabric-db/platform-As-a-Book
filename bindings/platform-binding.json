@@ -68,7 +68,10 @@
     "examples/bookkeeper-auth-author-event.json",
     "schemas/coolify-deployment-contract.schema.json",
     "schemas/platform-binding.schema.json",
+    "schemas/stack-anchor.schema.json",
+    "anchors/stack-anchor.json",
     "policies/agent.rego",
+    "src/stack-anchor.md",
     "src/binding-gate.md"
   ]
 }
