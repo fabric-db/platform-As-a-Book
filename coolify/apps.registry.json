@@ -1,0 +1,45 @@
+{
+  "$schema": "./apps.registry.schema.json",
+  "id": "platform-as-a-book-coolify-apps",
+  "kind": "coolify.apps.registry",
+  "version": "0.1.0",
+  "apps": [
+    {
+      "slug": "platform-as-a-book-stack",
+      "name": "Platform As A Book Stack",
+      "type": "docker-compose",
+      "description": "Deploys the complete book-stack runtime: agent API, worker, and AnyDB substrate.",
+      "compose_file": "coolify/agennext-agent-stack.compose.yml",
+      "contract_file": "coolify/deployment-contract.json",
+      "env_config_file": "coolify/env/production.env.example",
+      "handoff_file": "coolify/gate-handoff.json",
+      "domains": [],
+      "required_env": [
+        "AGENT_API_IMAGE",
+        "AGENT_WORKER_IMAGE",
+        "IMAGE_TAG",
+        "DATABASE_URL",
+        "OPA_URL",
+        "OPENFGA_API_URL",
+        "AGENT_IDENTITY_ISSUER",
+        "SURREAL_ROOT_USER",
+        "SURREAL_ROOT_PASS"
+      ],
+      "doors": [
+        "deployment",
+        "auth-author",
+        "agent-state",
+        "policy-decision",
+        "identity",
+        "payment",
+        "evaluation",
+        "runtime-event",
+        "audit"
+      ],
+      "store": "anydb",
+      "ledger": "bookkeeper",
+      "gate": "release-gate",
+      "enabled": true
+    }
+  ]
+}
