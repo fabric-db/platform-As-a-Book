@@ -15,6 +15,9 @@ Control Layer
 Runtime Layer
   -> Fabric, agents, services, events, operators
 
+Data State Layer
+  -> CoolDB, agent state, box records, evidence records
+
 Platform Operations Layer
   -> Coolify, Docker, Compose, domains, SSL, deploys, rollback
 
@@ -57,6 +60,14 @@ The runtime layer executes the platform.
 
 For Fabric DB, the runtime includes data fabric, box model, agent lifecycle, identity, access, policies, events, and reconciliation.
 
+## Data State Layer
+
+The data state layer stores the platform facts that must survive a deployment.
+
+CoolDB is the named database contract for this layer. In the default Coolify deployment profile, CoolDB is backed by SurrealDB, but the platform-facing service name remains CoolDB.
+
+CoolDB stores agent state, box records, runtime evidence, deployment evidence, and governed data snapshots.
+
 ## Platform Operations Layer
 
 The platform operations layer makes the runtime deployable.
@@ -67,7 +78,8 @@ The rule is:
 
 ```text
 Coolify runs platform services.
-Fabric records platform state.
+CoolDB stores platform state.
+Fabric gives platform state meaning.
 AGenNext governs agent behavior.
 The book gates the release.
 ```
