@@ -28,6 +28,8 @@ jobs:
           compose_path = root / "coolify" / "agennext-agent-stack.compose.yml"
           binding_path = root / "bindings" / "platform-binding.json"
           binding_schema_path = root / "schemas" / "platform-binding.schema.json"
+          anchor_path = root / "anchors" / "stack-anchor.json"
+          anchor_schema_path = root / "schemas" / "stack-anchor.schema.json"
           anydata_schema_path = root / "schemas" / "anydata-envelope.schema.json"
           anydata_example_path = root / "examples" / "anydata-envelope.json"
 
@@ -36,6 +38,8 @@ jobs:
           compose = compose_path.read_text()
           binding = json.loads(binding_path.read_text())
           binding_schema = json.loads(binding_schema_path.read_text())
+          anchor = json.loads(anchor_path.read_text())
+          anchor_schema = json.loads(anchor_schema_path.read_text())
           anydata_schema = json.loads(anydata_schema_path.read_text())
           anydata_example = json.loads(anydata_example_path.read_text())
 
@@ -76,6 +80,27 @@ jobs:
           for key in binding_schema["required"]:
             if key not in binding:
               raise SystemExit(f"Missing binding key: {key}")
+          for key in anchor_schema["required"]:
+            if key not in anchor:
+              raise SystemExit(f"Missing anchor key: {key}")
+          if anchor["kind"] != "platform.stack.anchor":
+            raise SystemExit("Invalid stack anchor kind")
+          if anchor["gate"] != "release-gate":
+            raise SystemExit("Stack anchor must bind to release-gate")
+          if anchor["substrate"] != "anydb":
+            raise SystemExit("Stack anchor substrate must be anydb")
+          if anchor["ledger"] != "bookkeeper":
+            raise SystemExit("Stack anchor ledger must be bookkeeper")
+          if anchor["meaning"] != "fabric":
+            raise SystemExit("Stack anchor meaning layer must be fabric")
+          if anchor["governance"] != "agennext":
+            raise SystemExit("Stack anchor governance layer must be agennext")
+          for required_door in ["deployment", "auth-author"]:
+            if required_door not in anchor["doors"]:
+              raise SystemExit(f"Missing stack anchor door: {required_door}")
+          for artifact in anchor["required_artifacts"]:
+            if not (root / artifact).exists():
+              raise SystemExit(f"Missing stack anchor artifact: {artifact}")
           if binding["kind"] != "platform.binding.gate":
             raise SystemExit("Invalid binding kind")
           if binding["gate"]["name"] != "release-gate":
@@ -141,5 +166,5 @@ jobs:
           if auth_author_event["variables"].get("ledger_append_required") is not True:
             raise SystemExit("Auth/author event must require ledger append")
 
-          print("AnyDB/AnyData/BookKeeper gate validation passed")
+          print("Stack anchor gate validation passed")
           PY
