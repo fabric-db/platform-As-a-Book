@@ -7,6 +7,7 @@
 - [Book Driven Engineering](book-driven-engineering.md)
 - [Architecture](architecture.md)
 - [Coolify Platform Contract](coolify-platform-contract.md)
+- [Binding Gate](binding-gate.md)
 - [Fabric Model](fabric-model.md)
 - [Box Model](box-model.md)
 - [Agent Model](agent-model.md)
