@@ -49,3 +49,18 @@ The runtime should support:
 - multi-cloud deployment
 - open standards
 - no forced tunnel dependency
+
+## Coolify Runtime Boundary
+
+Coolify can run the runtime, but it is not the runtime brain.
+
+In the runtime contract:
+
+- Coolify starts and updates services
+- Docker or Compose defines process reality
+- Fabric records state and events
+- policy services decide access
+- identity services issue and verify credentials
+- agents execute within governed boundaries
+
+This keeps platform operations separate from agent governance.
