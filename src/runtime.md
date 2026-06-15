@@ -69,13 +69,15 @@ This keeps platform operations separate from agent governance.
 
 ## AnyDB Runtime Boundary
 
-AnyDB is the stable store service name for the agent platform.
+AnyDB is the stable store service name and single store substrate for the agent platform.
 
 The backing engine may be SurrealDB, Postgres, or another approved store in future profiles, but agents should bind to the AnyDB contract rather than to an implementation name.
 
 AnyDB must preserve:
 
 - AnyData envelopes
+- the single governed substrate
+- multi-door ingress records
 - agent state
 - box state
 - decision evidence
