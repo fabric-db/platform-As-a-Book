@@ -1,0 +1,34 @@
+{
+  "$schema": "../schemas/stack-anchor.schema.json",
+  "id": "agennext-book-stack-anchor",
+  "kind": "platform.stack.anchor",
+  "version": "0.1.0",
+  "anchor": "book-stack",
+  "gate": "release-gate",
+  "substrate": "anydb",
+  "doors": [
+    "deployment",
+    "auth-author",
+    "agent-state",
+    "policy-decision",
+    "identity",
+    "payment",
+    "evaluation",
+    "runtime-event",
+    "audit"
+  ],
+  "ledger": "bookkeeper",
+  "meaning": "fabric",
+  "governance": "agennext",
+  "required_artifacts": [
+    "bindings/platform-binding.json",
+    "coolify/deployment-contract.json",
+    "coolify/agennext-agent-stack.compose.yml",
+    "anydb/README.md",
+    "bookkeeper/README.md",
+    "examples/anydata-envelope.json",
+    "examples/bookkeeper-auth-author-event.json",
+    "src/stack-anchor.md",
+    "src/binding-gate.md"
+  ]
+}
