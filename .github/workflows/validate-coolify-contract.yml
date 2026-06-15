@@ -26,10 +26,18 @@ jobs:
           contract_path = root / "coolify" / "deployment-contract.json"
           schema_path = root / "schemas" / "coolify-deployment-contract.schema.json"
           compose_path = root / "coolify" / "agennext-agent-stack.compose.yml"
+          binding_path = root / "bindings" / "platform-binding.json"
+          binding_schema_path = root / "schemas" / "platform-binding.schema.json"
+          anydata_schema_path = root / "schemas" / "anydata-envelope.schema.json"
+          anydata_example_path = root / "examples" / "anydata-envelope.json"
 
           contract = json.loads(contract_path.read_text())
           schema = json.loads(schema_path.read_text())
           compose = compose_path.read_text()
+          binding = json.loads(binding_path.read_text())
+          binding_schema = json.loads(binding_schema_path.read_text())
+          anydata_schema = json.loads(anydata_schema_path.read_text())
+          anydata_example = json.loads(anydata_example_path.read_text())
 
           required_top = schema["required"]
           missing = [key for key in required_top if key not in contract]
@@ -65,5 +73,73 @@ jobs:
             if token not in compose:
               raise SystemExit(f"Compose file missing required token: {token}")
 
-          print("Coolify contract validation passed")
+          for key in binding_schema["required"]:
+            if key not in binding:
+              raise SystemExit(f"Missing binding key: {key}")
+          if binding["kind"] != "platform.binding.gate":
+            raise SystemExit("Invalid binding kind")
+          if binding["gate"]["name"] != "release-gate":
+            raise SystemExit("Binding must attach to release-gate")
+          if binding["gate"]["mode"] != "deny-on-missing-binding":
+            raise SystemExit("Gate must deny missing bindings")
+
+          required_pairs = {
+            ("coolify", "anydb", "deploys"),
+            ("anydata", "anydb", "enters-at-gate"),
+            ("anydb", "fabric", "stores-state-for"),
+            ("fabric", "agennext", "gives-meaning-to"),
+            ("agennext", "policy", "governs-through"),
+            ("policy", "bookkeeper", "writes-auth-author-evidence-to"),
+            ("bookkeeper", "anydata", "emits-ledger-evidence-as"),
+            ("book", "release-gate", "explains-and-gates"),
+          }
+          actual_pairs = {
+            (item["from"], item["to"], item["relation"])
+            for item in binding["bindings"]
+          }
+          missing_pairs = sorted(required_pairs - actual_pairs)
+          if missing_pairs:
+            raise SystemExit(f"Missing platform bindings: {missing_pairs}")
+
+          for artifact in binding["required_artifacts"]:
+            if not (root / artifact).exists():
+              raise SystemExit(f"Missing binding artifact: {artifact}")
+          for item in binding["bindings"]:
+            if not (root / item["evidence"]).exists():
+              raise SystemExit(f"Missing binding evidence: {item['evidence']}")
+
+          for key in anydata_schema["required"]:
+            if key not in anydata_example:
+              raise SystemExit(f"Missing AnyData key: {key}")
+          if anydata_example["kind"] != "anydata.envelope":
+            raise SystemExit("Invalid AnyData envelope kind")
+          if anydata_example["payload"].get("store") != "anydb":
+            raise SystemExit("AnyData must store at anydb")
+          if anydata_example["payload"].get("gate") != "release-gate":
+            raise SystemExit("AnyData must enter at release-gate")
+          if anydata_example.get("substrate") != "anydb":
+            raise SystemExit("AnyData substrate must be anydb")
+          if not anydata_example.get("door"):
+            raise SystemExit("AnyData must enter through a door")
+          if not anydata_example.get("dimensions"):
+            raise SystemExit("AnyData must carry dimensions")
+          if not anydata_example.get("variables"):
+            raise SystemExit("AnyData must carry variables")
+          for required_dimension in ["service", "runtime", "store", "gate"]:
+            if required_dimension not in anydata_example["dimensions"]:
+              raise SystemExit(f"Missing AnyData dimension: {required_dimension}")
+          if anydata_example["dimensions"].get("door") != anydata_example["door"]:
+            raise SystemExit("AnyData door must match door dimension")
+
+          auth_author_event = json.loads((root / "examples" / "bookkeeper-auth-author-event.json").read_text())
+          if auth_author_event.get("source") != "bookkeeper":
+            raise SystemExit("Auth/author event must come from BookKeeper")
+          if auth_author_event.get("door") != "auth-author":
+            raise SystemExit("Auth/author event must use auth-author door")
+          if auth_author_event.get("substrate") != "anydb":
+            raise SystemExit("Auth/author event must store on AnyDB substrate")
+          if auth_author_event["variables"].get("ledger_append_required") is not True:
+            raise SystemExit("Auth/author event must require ledger append")
+
+          print("AnyDB/AnyData/BookKeeper gate validation passed")
           PY
