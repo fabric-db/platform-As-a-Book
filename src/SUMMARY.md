@@ -9,6 +9,7 @@
 - [Stack Anchor](stack-anchor.md)
 - [Coolify Platform Contract](coolify-platform-contract.md)
 - [Binding Gate](binding-gate.md)
+- [Deployment Gate Handoff](deployment-gate-handoff.md)
 - [BookKeeper Auth/Author Stack](bookkeeper-auth-author-stack.md)
 - [Fabric Model](fabric-model.md)
 - [Box Model](box-model.md)
