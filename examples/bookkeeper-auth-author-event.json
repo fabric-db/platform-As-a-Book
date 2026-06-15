@@ -1,0 +1,36 @@
+{
+  "$schema": "../schemas/anydata-envelope.schema.json",
+  "id": "anydata:auth-author:deployment:agennext-agent-stack",
+  "kind": "anydata.envelope",
+  "source": "bookkeeper",
+  "data_type": "auth_author.evidence",
+  "schema_ref": "schemas/anydata-envelope.schema.json",
+  "policy_ref": "policies/agent.rego",
+  "evidence_ref": "bookkeeper/README.md",
+  "substrate": "anydb",
+  "door": "auth-author",
+  "dimensions": {
+    "tenant": "platform",
+    "subject": "agent:agennext-agent-api",
+    "resource": "deployment:agennext-agent-stack",
+    "action": "deploy",
+    "runtime": "coolify",
+    "store": "anydb",
+    "ledger": "bookkeeper",
+    "door": "auth-author",
+    "gate": "release-gate"
+  },
+  "variables": {
+    "authenticated": true,
+    "authorized": true,
+    "policy_version": "0.1.0",
+    "ledger_append_required": true
+  },
+  "trust_state": "verified",
+  "created_at": "2026-06-15T00:00:00Z",
+  "payload": {
+    "ledger": "bookkeeper",
+    "store": "anydb",
+    "gate": "release-gate"
+  }
+}
