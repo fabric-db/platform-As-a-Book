@@ -18,7 +18,7 @@ services:
       timeout: 5s
       retries: 3
     depends_on:
-      - surrealdb
+      - cooldb
 
   agennext-agent-worker:
     image: ${AGENT_WORKER_IMAGE:-ghcr.io/agennext/agennext-agent-worker}:${IMAGE_TAG:-latest}
@@ -35,9 +35,9 @@ services:
       timeout: 5s
       retries: 3
     depends_on:
-      - surrealdb
+      - cooldb
 
-  surrealdb:
+  cooldb:
     image: surrealdb/surrealdb:latest
     restart: unless-stopped
     command:
@@ -49,7 +49,7 @@ services:
       SURREAL_USER: ${SURREAL_ROOT_USER}
       SURREAL_PASS: ${SURREAL_ROOT_PASS}
     volumes:
-      - surrealdb-data:/data
+      - cooldb-data:/data
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://localhost:8000/health"]
       interval: 30s
@@ -57,4 +57,4 @@ services:
       retries: 3
 
 volumes:
-  surrealdb-data:
+  cooldb-data:
