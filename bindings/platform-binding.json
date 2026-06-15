@@ -40,6 +40,18 @@
       "evidence": "policies/agent.rego"
     },
     {
+      "from": "policy",
+      "to": "bookkeeper",
+      "relation": "writes-auth-author-evidence-to",
+      "evidence": "bookkeeper/README.md"
+    },
+    {
+      "from": "bookkeeper",
+      "to": "anydata",
+      "relation": "emits-ledger-evidence-as",
+      "evidence": "examples/bookkeeper-auth-author-event.json"
+    },
+    {
       "from": "book",
       "to": "release-gate",
       "relation": "explains-and-gates",
@@ -52,6 +64,8 @@
     "anydb/README.md",
     "schemas/anydata-envelope.schema.json",
     "examples/anydata-envelope.json",
+    "bookkeeper/README.md",
+    "examples/bookkeeper-auth-author-event.json",
     "schemas/coolify-deployment-contract.schema.json",
     "schemas/platform-binding.schema.json",
     "policies/agent.rego",
