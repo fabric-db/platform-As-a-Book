@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fabric-db.github.io/platform-As-a-Book/schemas/agent.schema.json",
+  "title": "Agent Contract",
+  "type": "object",
+  "required": ["name", "objective", "owner", "status", "risk_class"],
+  "properties": {
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "objective": {
+      "type": "string",
+      "minLength": 1
+    },
+    "owner": {
+      "type": "string",
+      "minLength": 1
+    },
+    "status": {
+      "type": "string",
+      "enum": ["draft", "reviewed", "approved", "active", "probation", "suspended", "retired", "archived"]
+    },
+    "risk_class": {
+      "type": "string",
+      "enum": ["low", "medium", "high", "critical"]
+    },
+    "allowed_tools": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "approval_required": {
+      "type": "boolean"
+    }
+  },
+  "additionalProperties": false
+}
