@@ -6,6 +6,7 @@
 - [Principles](principles.md)
 - [Book Driven Engineering](book-driven-engineering.md)
 - [Architecture](architecture.md)
+- [Coolify Platform Contract](coolify-platform-contract.md)
 - [Fabric Model](fabric-model.md)
 - [Box Model](box-model.md)
 - [Agent Model](agent-model.md)
