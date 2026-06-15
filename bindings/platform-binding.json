@@ -1,0 +1,60 @@
+{
+  "$schema": "../schemas/platform-binding.schema.json",
+  "id": "agennext-coolify-anydb-binding",
+  "kind": "platform.binding.gate",
+  "version": "0.1.0",
+  "gate": {
+    "name": "release-gate",
+    "required": true,
+    "mode": "deny-on-missing-binding"
+  },
+  "bindings": [
+    {
+      "from": "coolify",
+      "to": "anydb",
+      "relation": "deploys",
+      "evidence": "coolify/agennext-agent-stack.compose.yml"
+    },
+    {
+      "from": "anydata",
+      "to": "anydb",
+      "relation": "enters-at-gate",
+      "evidence": "examples/anydata-envelope.json"
+    },
+    {
+      "from": "anydb",
+      "to": "fabric",
+      "relation": "stores-state-for",
+      "evidence": "anydb/README.md"
+    },
+    {
+      "from": "fabric",
+      "to": "agennext",
+      "relation": "gives-meaning-to",
+      "evidence": "src/fabric-model.md"
+    },
+    {
+      "from": "agennext",
+      "to": "policy",
+      "relation": "governs-through",
+      "evidence": "policies/agent.rego"
+    },
+    {
+      "from": "book",
+      "to": "release-gate",
+      "relation": "explains-and-gates",
+      "evidence": "src/binding-gate.md"
+    }
+  ],
+  "required_artifacts": [
+    "coolify/deployment-contract.json",
+    "coolify/agennext-agent-stack.compose.yml",
+    "anydb/README.md",
+    "schemas/anydata-envelope.schema.json",
+    "examples/anydata-envelope.json",
+    "schemas/coolify-deployment-contract.schema.json",
+    "schemas/platform-binding.schema.json",
+    "policies/agent.rego",
+    "src/binding-gate.md"
+  ]
+}
