@@ -58,9 +58,25 @@ In the runtime contract:
 
 - Coolify starts and updates services
 - Docker or Compose defines process reality
-- Fabric records state and events
+- CoolDB stores state and events
+- Fabric gives stored state semantic meaning
 - policy services decide access
 - identity services issue and verify credentials
 - agents execute within governed boundaries
 
 This keeps platform operations separate from agent governance.
+
+## CoolDB Runtime Boundary
+
+CoolDB is the stable database service name for the agent platform.
+
+The backing engine may be SurrealDB, Postgres, or another approved store in future profiles, but agents should bind to the CoolDB contract rather than to an implementation name.
+
+CoolDB must preserve:
+
+- agent state
+- box state
+- decision evidence
+- deployment evidence
+- runtime events
+- audit records
