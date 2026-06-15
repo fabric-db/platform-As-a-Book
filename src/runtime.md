@@ -58,7 +58,8 @@ In the runtime contract:
 
 - Coolify starts and updates services
 - Docker or Compose defines process reality
-- CoolDB stores state and events
+- AnyData enters at the gate
+- AnyDB stores state and events at the gate
 - Fabric gives stored state semantic meaning
 - policy services decide access
 - identity services issue and verify credentials
@@ -66,14 +67,15 @@ In the runtime contract:
 
 This keeps platform operations separate from agent governance.
 
-## CoolDB Runtime Boundary
+## AnyDB Runtime Boundary
 
-CoolDB is the stable database service name for the agent platform.
+AnyDB is the stable store service name for the agent platform.
 
-The backing engine may be SurrealDB, Postgres, or another approved store in future profiles, but agents should bind to the CoolDB contract rather than to an implementation name.
+The backing engine may be SurrealDB, Postgres, or another approved store in future profiles, but agents should bind to the AnyDB contract rather than to an implementation name.
 
-CoolDB must preserve:
+AnyDB must preserve:
 
+- AnyData envelopes
 - agent state
 - box state
 - decision evidence
