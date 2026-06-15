@@ -1,0 +1,41 @@
+{
+  "$schema": "./gate-handoff.schema.json",
+  "id": "platform-as-a-book-release-gate-handoff",
+  "kind": "coolify.gate.handoff",
+  "version": "0.1.0",
+  "gate": "release-gate",
+  "handoff": {
+    "from": "github-actions",
+    "to": "coolify",
+    "mode": "env-configured-docker-compose",
+    "status": "ready-for-reconcile"
+  },
+  "required_inputs": [
+    "coolify/apps.registry.json",
+    "coolify/agennext-agent-stack.compose.yml",
+    "coolify/deployment-contract.json",
+    "coolify/env/production.env.example"
+  ],
+  "required_runtime_env": [
+    "COOLIFY_URL",
+    "COOLIFY_TOKEN",
+    "COOLIFY_SERVER_UUID",
+    "COOLIFY_PROJECT_UUID"
+  ],
+  "required_evidence": [
+    "app-registry-validated",
+    "env-config-present",
+    "compose-payload-generated",
+    "coolify-app-created-or-updated",
+    "deployment-triggered",
+    "health-check-observed"
+  ],
+  "store": "anydb",
+  "ledger": "bookkeeper",
+  "doors": [
+    "deployment",
+    "auth-author",
+    "runtime-event",
+    "audit"
+  ]
+}
