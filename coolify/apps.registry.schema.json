@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Coolify Apps Registry",
+  "type": "object",
+  "required": ["id", "kind", "version", "apps"],
+  "properties": {
+    "id": { "type": "string" },
+    "kind": { "const": "coolify.apps.registry" },
+    "version": { "type": "string" },
+    "apps": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "slug",
+          "name",
+          "type",
+          "compose_file",
+          "contract_file",
+          "env_config_file",
+          "handoff_file",
+          "required_env",
+          "doors",
+          "store",
+          "ledger",
+          "gate",
+          "enabled"
+        ],
+        "properties": {
+          "slug": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9-]*[a-z0-9]$"
+          },
+          "name": { "type": "string" },
+          "type": { "const": "docker-compose" },
+          "description": { "type": "string" },
+          "compose_file": { "type": "string" },
+          "contract_file": { "type": "string" },
+          "env_config_file": { "type": "string" },
+          "handoff_file": { "type": "string" },
+          "domains": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "required_env": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "type": "string" }
+          },
+          "doors": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "type": "string" }
+          },
+          "store": { "const": "anydb" },
+          "ledger": { "const": "bookkeeper" },
+          "gate": { "const": "release-gate" },
+          "enabled": { "type": "boolean" }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}
