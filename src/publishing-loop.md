@@ -27,6 +27,27 @@ On every push to `main`, the workflow:
 4. uploads the generated site
 5. deploys to Pages
 
+## GitHub To Coolify
+
+GitHub Pages publishes the book.
+
+Coolify publishes the platform services described by the book.
+
+The publishing loop therefore has two outputs:
+
+```text
+Book push
+  -> GitHub Pages
+  -> Human-readable platform contract
+
+Platform push
+  -> CI image or source handoff
+  -> Coolify deployment
+  -> Runtime evidence
+```
+
+The same book governs both.
+
 ## Publishing Gate
 
 A book change should be rejected when:
@@ -37,6 +58,7 @@ A book change should be rejected when:
 - policies are invalid
 - generated examples are stale
 - the operational impact is unclear
+- the Coolify deployment contract is missing for deployable services
 
 ## Book As Release Gate
 
