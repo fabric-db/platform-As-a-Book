@@ -109,6 +109,15 @@ evidence:
 
 This contract can be expressed as YAML, JSON Schema, a repository policy, or a generated deployment manifest. The important point is that deployment intent is not trapped in a UI click.
 
+The real contract files live in:
+
+- `coolify/deployment-contract.json`
+- `coolify/agennext-agent-stack.compose.yml`
+- `schemas/coolify-deployment-contract.schema.json`
+- `.github/workflows/validate-coolify-contract.yml`
+
+These files close the gap between book language and deployable platform reality.
+
 ## Compose Contract
 
 When Docker Compose is used, the compose file becomes the single operational source for the service graph.
