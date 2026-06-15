@@ -32,6 +32,10 @@ jobs:
           anchor_schema_path = root / "schemas" / "stack-anchor.schema.json"
           anydata_schema_path = root / "schemas" / "anydata-envelope.schema.json"
           anydata_example_path = root / "examples" / "anydata-envelope.json"
+          apps_registry_path = root / "coolify" / "apps.registry.json"
+          apps_registry_schema_path = root / "coolify" / "apps.registry.schema.json"
+          handoff_path = root / "coolify" / "gate-handoff.json"
+          handoff_schema_path = root / "coolify" / "gate-handoff.schema.json"
 
           contract = json.loads(contract_path.read_text())
           schema = json.loads(schema_path.read_text())
@@ -42,6 +46,10 @@ jobs:
           anchor_schema = json.loads(anchor_schema_path.read_text())
           anydata_schema = json.loads(anydata_schema_path.read_text())
           anydata_example = json.loads(anydata_example_path.read_text())
+          apps_registry = json.loads(apps_registry_path.read_text())
+          apps_registry_schema = json.loads(apps_registry_schema_path.read_text())
+          handoff = json.loads(handoff_path.read_text())
+          handoff_schema = json.loads(handoff_schema_path.read_text())
 
           required_top = schema["required"]
           missing = [key for key in required_top if key not in contract]
@@ -166,5 +174,52 @@ jobs:
           if auth_author_event["variables"].get("ledger_append_required") is not True:
             raise SystemExit("Auth/author event must require ledger append")
 
-          print("Stack anchor gate validation passed")
+          for key in apps_registry_schema["required"]:
+            if key not in apps_registry:
+              raise SystemExit(f"Missing app registry key: {key}")
+          if apps_registry["kind"] != "coolify.apps.registry":
+            raise SystemExit("Invalid app registry kind")
+
+          app_slugs = set()
+          for app in apps_registry["apps"]:
+            slug = app["slug"]
+            if slug in app_slugs:
+              raise SystemExit(f"Duplicate app slug: {slug}")
+            app_slugs.add(slug)
+            if app["type"] != "docker-compose":
+              raise SystemExit(f"Unsupported app type: {slug}")
+            if app["store"] != "anydb":
+              raise SystemExit(f"App must store at AnyDB: {slug}")
+            if app["ledger"] != "bookkeeper":
+              raise SystemExit(f"App must ledger through BookKeeper: {slug}")
+            if app["gate"] != "release-gate":
+              raise SystemExit(f"App must hand off at release-gate: {slug}")
+            for path_key in ["compose_file", "contract_file", "env_config_file", "handoff_file"]:
+              path = root / app[path_key]
+              if not path.exists():
+                raise SystemExit(f"Missing app {path_key}: {path}")
+            env_config = (root / app["env_config_file"]).read_text()
+            for env_name in app["required_env"]:
+              if f"{env_name}=" not in env_config and f"{env_name}:" not in env_config:
+                raise SystemExit(f"App env config missing {env_name}: {slug}")
+
+          for key in handoff_schema["required"]:
+            if key not in handoff:
+              raise SystemExit(f"Missing handoff key: {key}")
+          if handoff["kind"] != "coolify.gate.handoff":
+            raise SystemExit("Invalid gate handoff kind")
+          if handoff["gate"] != "release-gate":
+            raise SystemExit("Gate handoff must use release-gate")
+          if handoff["store"] != "anydb":
+            raise SystemExit("Gate handoff must store at AnyDB")
+          if handoff["ledger"] != "bookkeeper":
+            raise SystemExit("Gate handoff must ledger through BookKeeper")
+          for required_input in handoff["required_inputs"]:
+            if not (root / required_input).exists():
+              raise SystemExit(f"Missing handoff input: {required_input}")
+          for gate_env in ["COOLIFY_URL", "COOLIFY_TOKEN", "COOLIFY_SERVER_UUID", "COOLIFY_PROJECT_UUID"]:
+            if gate_env not in handoff["required_runtime_env"]:
+              raise SystemExit(f"Missing gate runtime env: {gate_env}")
+
+          print("Coolify app env-config gate validation passed")
           PY
