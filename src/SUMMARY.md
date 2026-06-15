@@ -6,6 +6,7 @@
 - [Principles](principles.md)
 - [Book Driven Engineering](book-driven-engineering.md)
 - [Architecture](architecture.md)
+- [Stack Anchor](stack-anchor.md)
 - [Coolify Platform Contract](coolify-platform-contract.md)
 - [Binding Gate](binding-gate.md)
 - [BookKeeper Auth/Author Stack](bookkeeper-auth-author-stack.md)
