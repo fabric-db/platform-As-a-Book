@@ -1,0 +1,9 @@
+{
+  "name": "fabric-reconciler",
+  "objective": "Reconcile desired Fabric state against runtime state and emit evidence.",
+  "owner": "fabric-db",
+  "status": "draft",
+  "risk_class": "medium",
+  "allowed_tools": ["read:fabric", "write:evidence"],
+  "approval_required": true
+}
