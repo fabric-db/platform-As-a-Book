@@ -1,0 +1,31 @@
+name: Reconcile Coolify Apps
+
+on:
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Validate and print payloads only"
+        required: true
+        default: "true"
+
+permissions:
+  contents: read
+
+jobs:
+  reconcile:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Reconcile apps
+        env:
+          DRY_RUN: ${{ inputs.dry_run }}
+          COOLIFY_URL: ${{ secrets.COOLIFY_URL }}
+          COOLIFY_TOKEN: ${{ secrets.COOLIFY_TOKEN }}
+          COOLIFY_SERVER_UUID: ${{ secrets.COOLIFY_SERVER_UUID }}
+          COOLIFY_PROJECT_UUID: ${{ secrets.COOLIFY_PROJECT_UUID }}
+          COOLIFY_ENVIRONMENT_NAME: ${{ secrets.COOLIFY_ENVIRONMENT_NAME }}
+        run: |
+          chmod +x scripts/reconcile-coolify-apps.sh
+          scripts/reconcile-coolify-apps.sh
