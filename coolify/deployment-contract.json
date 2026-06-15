@@ -1,0 +1,67 @@
+{
+  "$schema": "../schemas/coolify-deployment-contract.schema.json",
+  "id": "agennext-agent-stack",
+  "kind": "coolify.deployment.contract",
+  "version": "0.1.0",
+  "platform": "coolify",
+  "source": {
+    "type": "image",
+    "repository": "ghcr.io/agennext",
+    "handoff": "github-actions-to-registry-to-coolify"
+  },
+  "services": [
+    {
+      "name": "agennext-agent-api",
+      "type": "application",
+      "image_variable": "AGENT_API_IMAGE",
+      "port": 8080,
+      "health_path": "/health",
+      "stateful": false
+    },
+    {
+      "name": "agennext-agent-worker",
+      "type": "worker",
+      "image_variable": "AGENT_WORKER_IMAGE",
+      "health_path": "/health",
+      "stateful": false
+    },
+    {
+      "name": "surrealdb",
+      "type": "database",
+      "image": "surrealdb/surrealdb:latest",
+      "port": 8000,
+      "health_path": "/health",
+      "stateful": true,
+      "volume": "surrealdb-data"
+    }
+  ],
+  "environment": {
+    "required": [
+      "AGENT_API_IMAGE",
+      "AGENT_WORKER_IMAGE",
+      "IMAGE_TAG",
+      "DATABASE_URL",
+      "OPA_URL",
+      "OPENFGA_API_URL",
+      "AGENT_IDENTITY_ISSUER",
+      "SURREAL_ROOT_USER",
+      "SURREAL_ROOT_PASS"
+    ]
+  },
+  "release": {
+    "strategy": "image-handoff",
+    "rollback_required": true,
+    "commit_sha_required": true,
+    "deployment_id_required": true
+  },
+  "evidence": {
+    "logs_required": true,
+    "health_required": true,
+    "operator_action_required": true
+  },
+  "ownership": {
+    "runtime_owner": "platform-ops",
+    "policy_owner": "agent-governance",
+    "data_classification": "platform-operational"
+  }
+}
