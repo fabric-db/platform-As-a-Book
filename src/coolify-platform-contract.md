@@ -25,8 +25,8 @@ AGenNext / Fabric Runtime
 Coolify Platform Layer
   -> applications, services, domains, SSL, deploys
 
-CoolDB Data Layer
-  -> agent state, box records, runtime evidence, deployment evidence
+AnyDB Store Layer
+  -> single store, multi-door AnyData, agent state, box records, runtime evidence, deployment evidence
 
 Docker / Compose / Images
   -> containers, networks, volumes, health checks
@@ -35,7 +35,7 @@ Server Layer
   -> VPS, bare metal, private cloud, edge node
 ```
 
-Coolify owns the deployment surface. CoolDB owns the platform-facing data service contract. AGenNext owns the meaning of what is deployed.
+Coolify owns the deployment surface. AnyDB owns the platform-facing single store contract. AnyData enters at the gate through many doors. AGenNext owns the meaning of what is deployed.
 
 ## What Coolify Must Guarantee
 
@@ -46,7 +46,7 @@ The Coolify contract should guarantee:
 - domains and HTTPS can be bound to the deployed application
 - environment variables and secrets can be provided without hard-coding them into source
 - persistent volumes are explicit and named
-- CoolDB and service resources are visible as managed platform resources
+- AnyDB and service resources are visible as managed platform resources
 - deployment logs are available for audit and repair
 - failed deployments do not silently become successful releases
 - manual and automated deployment modes are both supported
@@ -114,13 +114,21 @@ This contract can be expressed as YAML, JSON Schema, a repository policy, or a g
 
 The real contract files live in:
 
+- `bindings/platform-binding.json`
 - `coolify/deployment-contract.json`
 - `coolify/agennext-agent-stack.compose.yml`
-- `cooldb/README.md`
+- `anydb/README.md`
+- `bookkeeper/README.md`
+- `schemas/anydata-envelope.schema.json`
+- `examples/anydata-envelope.json`
+- `examples/bookkeeper-auth-author-event.json`
+- `schemas/platform-binding.schema.json`
 - `schemas/coolify-deployment-contract.schema.json`
 - `.github/workflows/validate-coolify-contract.yml`
 
 These files close the gap between book language and deployable platform reality.
+
+The binding gate is defined in `src/binding-gate.md`. At that gate, missing bindings block release.
 
 ## Compose Contract
 
@@ -141,19 +149,19 @@ services:
       timeout: 5s
       retries: 3
     depends_on:
-      - cooldb
+      - anydb
 
-  cooldb:
+  anydb:
     image: surrealdb/surrealdb:latest
     restart: unless-stopped
     volumes:
-      - cooldb-data:/data
+      - anydb-data:/data
 
 volumes:
-  cooldb-data:
+  anydb-data:
 ```
 
-In the concrete Coolify profile, the service is named `cooldb` and is backed by the `surrealdb/surrealdb` image. The name CoolDB is the contract; SurrealDB is the current engine.
+In the concrete Coolify profile, the service is named `anydb` and is backed by the `surrealdb/surrealdb` image. The name AnyDB is the contract; SurrealDB is the current engine.
 
 The contract rule is simple:
 
@@ -236,7 +244,9 @@ Deployment event
 
 Coolify is the platform for running the services.
 
-CoolDB is the platform-facing database contract for agent state and evidence.
+AnyData is the governed data envelope accepted at the gate.
+
+AnyDB is the platform-facing single store contract for AnyData, agent state, and evidence.
 
 AGenNext is the platform for agent meaning.
 
@@ -246,7 +256,8 @@ The contract between them is:
 
 ```text
 Coolify runs it.
-CoolDB stores it.
+AnyData enters it.
+AnyDB stores it at the gate as one store.
 Fabric gives it meaning.
 AGenNext governs it.
 The book explains and gates it.
