@@ -1,0 +1,60 @@
+name: agennext-agent-stack
+
+services:
+  agennext-agent-api:
+    image: ${AGENT_API_IMAGE:-ghcr.io/agennext/agennext-agent-api}:${IMAGE_TAG:-latest}
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
+      OPA_URL: ${OPA_URL}
+      OPENFGA_API_URL: ${OPENFGA_API_URL}
+      AGENT_IDENTITY_ISSUER: ${AGENT_IDENTITY_ISSUER}
+      AGENT_RUNTIME_MODE: coolify
+    ports:
+      - "8080:8080"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    depends_on:
+      - surrealdb
+
+  agennext-agent-worker:
+    image: ${AGENT_WORKER_IMAGE:-ghcr.io/agennext/agennext-agent-worker}:${IMAGE_TAG:-latest}
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
+      OPA_URL: ${OPA_URL}
+      OPENFGA_API_URL: ${OPENFGA_API_URL}
+      AGENT_IDENTITY_ISSUER: ${AGENT_IDENTITY_ISSUER}
+      AGENT_RUNTIME_MODE: coolify
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8081/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    depends_on:
+      - surrealdb
+
+  surrealdb:
+    image: surrealdb/surrealdb:latest
+    restart: unless-stopped
+    command:
+      - start
+      - --bind
+      - 0.0.0.0:8000
+      - file:/data/database.db
+    environment:
+      SURREAL_USER: ${SURREAL_ROOT_USER}
+      SURREAL_PASS: ${SURREAL_ROOT_PASS}
+    volumes:
+      - surrealdb-data:/data
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+volumes:
+  surrealdb-data:
