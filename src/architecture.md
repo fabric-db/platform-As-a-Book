@@ -15,6 +15,9 @@ Control Layer
 Runtime Layer
   -> Fabric, agents, services, events, operators
 
+Platform Operations Layer
+  -> Coolify, Docker, Compose, domains, SSL, deploys, rollback
+
 Evidence Layer
   -> Observability, audit, evaluation, incidents
 ```
@@ -53,6 +56,21 @@ It answers:
 The runtime layer executes the platform.
 
 For Fabric DB, the runtime includes data fabric, box model, agent lifecycle, identity, access, policies, events, and reconciliation.
+
+## Platform Operations Layer
+
+The platform operations layer makes the runtime deployable.
+
+Coolify is the default contract for this layer. It owns application deployment, service deployment, domains, SSL, environment injection, logs, and rollback. It does not own agent meaning, identity, policy, trust, or economics.
+
+The rule is:
+
+```text
+Coolify runs platform services.
+Fabric records platform state.
+AGenNext governs agent behavior.
+The book gates the release.
+```
 
 ## Evidence Layer
 
