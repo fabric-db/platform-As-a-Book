@@ -1,0 +1,69 @@
+name: Validate Coolify Contract
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate contract files
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+
+          root = Path(".")
+          contract_path = root / "coolify" / "deployment-contract.json"
+          schema_path = root / "schemas" / "coolify-deployment-contract.schema.json"
+          compose_path = root / "coolify" / "agennext-agent-stack.compose.yml"
+
+          contract = json.loads(contract_path.read_text())
+          schema = json.loads(schema_path.read_text())
+          compose = compose_path.read_text()
+
+          required_top = schema["required"]
+          missing = [key for key in required_top if key not in contract]
+          if missing:
+            raise SystemExit(f"Missing contract keys: {missing}")
+
+          if contract["kind"] != "coolify.deployment.contract":
+            raise SystemExit("Invalid contract kind")
+          if contract["platform"] != "coolify":
+            raise SystemExit("Invalid platform")
+          if not contract["services"]:
+            raise SystemExit("At least one service is required")
+
+          service_required = schema["properties"]["services"]["items"]["required"]
+          for index, service in enumerate(contract["services"]):
+            for key in service_required:
+              if key not in service:
+                raise SystemExit(f"Service {index} missing required key: {key}")
+
+          required_env = set(contract["environment"]["required"])
+          for env_name in required_env:
+            if env_name not in compose:
+              raise SystemExit(f"Required environment variable not found in compose: {env_name}")
+
+          for service in contract["services"]:
+            name = service["name"]
+            if name not in compose:
+              raise SystemExit(f"Service missing from compose: {name}")
+            if service.get("stateful") and service.get("volume") not in compose:
+              raise SystemExit(f"Stateful service volume missing from compose: {name}")
+
+          for token in ["healthcheck:", "restart:", "volumes:"]:
+            if token not in compose:
+              raise SystemExit(f"Compose file missing required token: {token}")
+
+          print("Coolify contract validation passed")
+          PY
