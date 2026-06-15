@@ -8,6 +8,10 @@ The book defines the meaning. These files define the operational handoff.
 
 - `deployment-contract.json` defines the required platform contract for a deployable agent service.
 - `agennext-agent-stack.compose.yml` is a Coolify-ready Docker Compose stack.
+- `apps.registry.json` lists every Coolify app that must be reconciled.
+- `env/production.env.example` is the app environment config surface for Coolify.
+- `env/gate.env.example` is the gate/reconciler environment config surface.
+- `gate-handoff.json` defines the release-gate handoff from GitHub Actions to Coolify.
 
 ## Boundary
 
@@ -24,13 +28,38 @@ AnyData enters at the gate. AnyDB stores it at the gate.
 ```text
 GitHub
   -> validation gate
-  -> image or source handoff
+  -> env-configured handoff
   -> Coolify
   -> runtime evidence
   -> book update
 ```
 
+## Reconcile All Apps
+
+The reconciler reads `apps.registry.json`, validates the compose file, contract, env config, and gate handoff, then generates the Coolify payload for every enabled app.
+
+Run validation only:
+
+```sh
+DRY_RUN=true scripts/reconcile-coolify-apps.sh
+```
+
+Run the real handoff by setting the gate env config values:
+
+```sh
+COOLIFY_URL=
+COOLIFY_TOKEN=
+COOLIFY_SERVER_UUID=
+COOLIFY_PROJECT_UUID=
+DRY_RUN=false
+scripts/reconcile-coolify-apps.sh
+```
+
+The GitHub Actions workflow `Reconcile Coolify Apps` uses the same gate. With `dry_run=true`, it validates and prints the payload. With `dry_run=false`, it hands the enabled apps to Coolify.
+
 ## Required Runtime Variables
+
+These belong in the Coolify app environment.
 
 - `AGENT_API_IMAGE`
 - `AGENT_WORKER_IMAGE`
@@ -41,6 +70,16 @@ GitHub
 - `AGENT_IDENTITY_ISSUER`
 - `SURREAL_ROOT_USER`
 - `SURREAL_ROOT_PASS`
+
+## Required Gate Variables
+
+These belong in the deployment gate, usually as GitHub Actions secrets.
+
+- `COOLIFY_URL`
+- `COOLIFY_TOKEN`
+- `COOLIFY_SERVER_UUID`
+- `COOLIFY_PROJECT_UUID`
+- `COOLIFY_ENVIRONMENT_NAME`
 
 ## Services
 
