@@ -7,6 +7,23 @@
   "schema_ref": "schemas/anydata-envelope.schema.json",
   "policy_ref": "policies/agent.rego",
   "evidence_ref": "coolify/deployment-contract.json",
+  "substrate": "anydb",
+  "door": "deployment",
+  "dimensions": {
+    "tenant": "platform",
+    "service": "agennext-agent-stack",
+    "runtime": "coolify",
+    "store": "anydb",
+    "substrate": "anydb",
+    "door": "deployment",
+    "gate": "release-gate"
+  },
+  "variables": {
+    "services_declared": 3,
+    "stateful_services": 1,
+    "health_checks_required": true,
+    "rollback_required": true
+  },
   "trust_state": "verified",
   "created_at": "2026-06-15T00:00:00Z",
   "payload": {
