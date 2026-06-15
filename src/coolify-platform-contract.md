@@ -23,7 +23,10 @@ AGenNext / Fabric Runtime
   -> agents, boxes, identity, policy, trust, economics
 
 Coolify Platform Layer
-  -> applications, services, databases, domains, SSL, deploys
+  -> applications, services, domains, SSL, deploys
+
+CoolDB Data Layer
+  -> agent state, box records, runtime evidence, deployment evidence
 
 Docker / Compose / Images
   -> containers, networks, volumes, health checks
@@ -32,7 +35,7 @@ Server Layer
   -> VPS, bare metal, private cloud, edge node
 ```
 
-Coolify owns the deployment surface. AGenNext owns the meaning of what is deployed.
+Coolify owns the deployment surface. CoolDB owns the platform-facing data service contract. AGenNext owns the meaning of what is deployed.
 
 ## What Coolify Must Guarantee
 
@@ -43,7 +46,7 @@ The Coolify contract should guarantee:
 - domains and HTTPS can be bound to the deployed application
 - environment variables and secrets can be provided without hard-coding them into source
 - persistent volumes are explicit and named
-- database and service resources are visible as managed platform resources
+- CoolDB and service resources are visible as managed platform resources
 - deployment logs are available for audit and repair
 - failed deployments do not silently become successful releases
 - manual and automated deployment modes are both supported
@@ -113,6 +116,7 @@ The real contract files live in:
 
 - `coolify/deployment-contract.json`
 - `coolify/agennext-agent-stack.compose.yml`
+- `cooldb/README.md`
 - `schemas/coolify-deployment-contract.schema.json`
 - `.github/workflows/validate-coolify-contract.yml`
 
@@ -137,17 +141,19 @@ services:
       timeout: 5s
       retries: 3
     depends_on:
-      - surrealdb
+      - cooldb
 
-  surrealdb:
+  cooldb:
     image: surrealdb/surrealdb:latest
     restart: unless-stopped
     volumes:
-      - surrealdb-data:/data
+      - cooldb-data:/data
 
 volumes:
-  surrealdb-data:
+  cooldb-data:
 ```
+
+In the concrete Coolify profile, the service is named `cooldb` and is backed by the `surrealdb/surrealdb` image. The name CoolDB is the contract; SurrealDB is the current engine.
 
 The contract rule is simple:
 
@@ -230,6 +236,8 @@ Deployment event
 
 Coolify is the platform for running the services.
 
+CoolDB is the platform-facing database contract for agent state and evidence.
+
 AGenNext is the platform for agent meaning.
 
 Fabric is the platform for governed data and state.
@@ -238,7 +246,8 @@ The contract between them is:
 
 ```text
 Coolify runs it.
-Fabric records it.
+CoolDB stores it.
+Fabric gives it meaning.
 AGenNext governs it.
 The book explains and gates it.
 ```
