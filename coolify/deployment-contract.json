@@ -26,13 +26,13 @@
       "stateful": false
     },
     {
-      "name": "surrealdb",
+      "name": "cooldb",
       "type": "database",
       "image": "surrealdb/surrealdb:latest",
       "port": 8000,
       "health_path": "/health",
       "stateful": true,
-      "volume": "surrealdb-data"
+      "volume": "cooldb-data"
     }
   ],
   "environment": {
