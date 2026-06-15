@@ -1,0 +1,19 @@
+[book]
+title = "Platform As A Book"
+authors = ["Fabric DB"]
+description = "A book-driven platform engineering model where the book is the canonical source for architecture, governance, runtime, and operations."
+language = "en"
+multilingual = false
+src = "src"
+
+[build]
+build-dir = "book"
+create-missing = false
+
+[output.html]
+git-repository-url = "https://github.com/fabric-db/platform-As-a-Book"
+edit-url-template = "https://github.com/fabric-db/platform-As-a-Book/edit/main/{path}"
+site-url = "/platform-As-a-Book/"
+default-theme = "light"
+preferred-dark-theme = "navy"
+additional-css = ["theme/custom.css"]
