@@ -11,6 +11,10 @@
     "schema_ref",
     "policy_ref",
     "evidence_ref",
+    "substrate",
+    "door",
+    "dimensions",
+    "variables",
     "trust_state",
     "created_at"
   ],
@@ -41,6 +45,27 @@
     "evidence_ref": {
       "type": "string",
       "minLength": 3
+    },
+    "substrate": {
+      "const": "anydb"
+    },
+    "door": {
+      "type": "string",
+      "minLength": 3
+    },
+    "dimensions": {
+      "type": "object",
+      "description": "Named axes used to interpret the data, such as tenant, actor, service, region, time, policy, model, or cost center.",
+      "additionalProperties": {
+        "type": ["string", "number", "boolean"]
+      }
+    },
+    "variables": {
+      "type": "object",
+      "description": "Measured or observed values carried by the envelope.",
+      "additionalProperties": {
+        "type": ["string", "number", "boolean", "null"]
+      }
     },
     "trust_state": {
       "enum": ["unverified", "verified", "blocked"]
