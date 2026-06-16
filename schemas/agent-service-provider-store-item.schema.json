@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fabric-db.github.io/platform-As-a-Book/schemas/agent-service-provider-store-item.schema.json",
+  "title": "Agent Service Provider Store Item",
+  "type": "object",
+  "required": ["id", "kind", "version", "status", "provider_contract", "publisher", "listing", "delivery", "governance"],
+  "properties": {
+    "id": { "type": "string", "pattern": "^store-item:[a-z0-9][a-z0-9-]*$" },
+    "kind": { "const": "agent.service-provider-store.item" },
+    "version": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$" },
+    "status": { "type": "string", "enum": ["draft", "submitted", "reviewed", "approved", "published", "active", "probation", "suspended", "retired", "archived"] },
+    "provider_contract": { "type": "string", "minLength": 1 },
+    "publisher": {
+      "type": "object",
+      "required": ["id", "verified"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^provider:[a-z0-9][a-z0-9-]*$" },
+        "verified": { "type": "boolean" }
+      },
+      "additionalProperties": false
+    },
+    "listing": {
+      "type": "object",
+      "required": ["name", "category", "summary", "risk_class"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "category": { "type": "string", "minLength": 1 },
+        "summary": { "type": "string", "minLength": 1 },
+        "risk_class": { "type": "string", "enum": ["low", "medium", "high", "critical"] }
+      },
+      "additionalProperties": false
+    },
+    "delivery": {
+      "type": "object",
+      "required": ["modes", "requires_operator_approval"],
+      "properties": {
+        "modes": { "type": "array", "minItems": 1, "items": { "type": "string", "enum": ["advisory", "managed-operation", "api", "mcp-server", "agent-workflow", "private-deployment", "store-package", "central", "edge", "air-gapped-edge"] }, "uniqueItems": true },
+        "requires_operator_approval": { "type": "boolean" }
+      },
+      "additionalProperties": false
+    },
+    "governance": {
+      "type": "object",
+      "required": ["review_required", "evidence_required", "default_decision"],
+      "properties": {
+        "review_required": { "type": "boolean" },
+        "evidence_required": { "type": "boolean" },
+        "default_decision": { "type": "string", "enum": ["deny", "allow"] }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}
