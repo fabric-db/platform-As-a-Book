@@ -17,6 +17,7 @@
 - [Agent Model](agent-model.md)
 - [Agent As Platform](agent-as-platform.md)
 - [Agent As Service Provider Builder Agent](agent-as-service-provider-builder-agent.md)
+- [Agent Service Provider Store](agent-service-provider-store.md)
 - [Identity And Trust](identity-and-trust.md)
 - [Governance](governance.md)
 - [Protocols](protocols.md)
