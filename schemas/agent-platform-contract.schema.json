@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fabric-db.github.io/platform-As-a-Book/schemas/agent-platform-contract.schema.json",
+  "title": "Agent Platform Contract",
+  "type": "object",
+  "required": ["id", "kind", "version", "status", "objective", "owner", "risk_class", "capabilities", "governance", "delivery", "evidence"],
+  "properties": {
+    "id": { "type": "string", "pattern": "^agent:[a-z0-9][a-z0-9-]*$" },
+    "kind": { "const": "agent.platform.contract" },
+    "version": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$" },
+    "status": { "type": "string", "enum": ["draft", "reviewed", "approved", "staged", "active", "probation", "suspended", "retired", "archived"] },
+    "objective": { "type": "string", "minLength": 1 },
+    "owner": { "type": "string", "minLength": 1 },
+    "risk_class": { "type": "string", "enum": ["low", "medium", "high", "critical"] },
+    "capabilities": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 }, "uniqueItems": true },
+    "governance": {
+      "type": "object",
+      "required": ["identity_required", "policy_engine", "relationship_engine", "human_gate_required"],
+      "properties": {
+        "identity_required": { "type": "boolean" },
+        "policy_engine": { "type": "string", "enum": ["opa"] },
+        "relationship_engine": { "type": "string", "enum": ["openfga", "none"] },
+        "human_gate_required": { "type": "boolean" }
+      },
+      "additionalProperties": false
+    },
+    "delivery": {
+      "type": "object",
+      "required": ["framework", "mode", "mcp_contract"],
+      "properties": {
+        "framework": { "type": "string", "enum": ["coolify"] },
+        "mode": { "type": "string", "enum": ["central", "edge", "air-gapped-edge"] },
+        "mcp_contract": { "type": "string", "minLength": 1 }
+      },
+      "additionalProperties": false
+    },
+    "evidence": {
+      "type": "object",
+      "required": ["decision_log_required", "tool_call_log_required", "deployment_log_required"],
+      "properties": {
+        "decision_log_required": { "type": "boolean" },
+        "tool_call_log_required": { "type": "boolean" },
+        "deployment_log_required": { "type": "boolean" }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}
