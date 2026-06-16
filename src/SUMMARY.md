@@ -8,6 +8,7 @@
 - [Architecture](architecture.md)
 - [Stack Anchor](stack-anchor.md)
 - [Coolify Platform Contract](coolify-platform-contract.md)
+- [MCP Coolify Edge Contract](mcp-coolify-edge-contract.md)
 - [Binding Gate](binding-gate.md)
 - [Deployment Gate Handoff](deployment-gate-handoff.md)
 - [BookKeeper Auth/Author Stack](bookkeeper-auth-author-stack.md)
