@@ -1,0 +1,14 @@
+{
+  "tuples": [
+    {
+      "user": "user:operator-17",
+      "relation": "operator",
+      "object": "workspace:factory-edge-01"
+    },
+    {
+      "user": "agent:fabric-repair",
+      "relation": "writer",
+      "object": "fabric_resource:evidence"
+    }
+  ]
+}
