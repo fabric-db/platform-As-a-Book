@@ -1,0 +1,85 @@
+{
+  "$schema": "../schemas/mcp-coolify-edge-contract.schema.json",
+  "id": "agennext-fabric-mcp-edge",
+  "kind": "mcp.coolify.edge.contract",
+  "version": "0.1.0",
+  "status": "draft",
+  "mcp": {
+    "protocol_version": "2025-06-18",
+    "server": {
+      "name": "agennext-fabric-mcp",
+      "title": "AGenNext Fabric MCP Server",
+      "version": "0.1.0",
+      "owner": "platform-ops",
+      "risk_class": "high"
+    },
+    "transport": {
+      "modes": ["streamable-http"],
+      "auth_required": true,
+      "http_path": "/mcp"
+    },
+    "capabilities": {
+      "tools": { "listChanged": true },
+      "resources": { "subscribe": true, "listChanged": true },
+      "prompts": { "listChanged": true },
+      "logging": true
+    },
+    "tools": [
+      {
+        "name": "fabric.query",
+        "description": "Read governed Fabric records through policy and relationship checks.",
+        "input_schema": "schemas/tools/fabric.query.input.schema.json",
+        "output_schema": "schemas/tools/fabric.query.output.schema.json",
+        "risk_class": "medium",
+        "approval_required": false
+      },
+      {
+        "name": "fabric.writeEvidence",
+        "description": "Append signed runtime evidence into the local evidence ledger.",
+        "input_schema": "schemas/tools/fabric.writeEvidence.input.schema.json",
+        "output_schema": "schemas/tools/fabric.writeEvidence.output.schema.json",
+        "risk_class": "high",
+        "approval_required": true
+      }
+    ],
+    "resources": [
+      {
+        "uri_template": "fabric://schema/{name}",
+        "description": "Versioned schema resources available to the MCP server.",
+        "classification": "internal"
+      },
+      {
+        "uri_template": "fabric://evidence/{trace_id}",
+        "description": "Runtime evidence records for trace replay and audit.",
+        "classification": "confidential"
+      }
+    ],
+    "prompts": [
+      {
+        "name": "fabric.repair-plan",
+        "description": "Prepare a governed repair plan from failed deployment evidence."
+      }
+    ]
+  },
+  "governance": {
+    "identity": { "issuer": "did:web:identity.agennext.local", "agent_did_required": true, "subject_required": true },
+    "policy": { "engine": "opa", "bundle": "policies/mcp-fabric.tar.gz", "default_decision": "deny" },
+    "authorization": { "relationship_engine": "openfga", "model": "authz/fabric.fga", "offline_snapshot_required": true },
+    "approval": { "required_for_risk_classes": ["high", "critical"], "human_gate_required": true },
+    "audit": { "trace_required": true, "decision_log_required": true, "tool_call_log_required": true, "sink": "anydb://evidence/mcp" }
+  },
+  "coolify": {
+    "application": "agennext-fabric-mcp",
+    "source": { "type": "compose", "repository": "github.com/agennext/fabric-mcp", "branch": "main", "image": "registry.edge.local/agennext/fabric-mcp", "digest_required": true, "compose_file": "coolify/agennext-mcp-edge.compose.yml" },
+    "runtime": { "port": 8090, "health_path": "/health", "restart_policy": "unless-stopped", "domain_required": false },
+    "environment": { "required": ["MCP_SERVER_NAME", "MCP_PROTOCOL_VERSION", "FABRIC_DATABASE_URL", "OPA_URL", "OPENFGA_API_URL", "AGENT_IDENTITY_ISSUER", "AUDIT_SINK_URL"], "secret_refs": ["FABRIC_DATABASE_TOKEN", "MCP_AUTH_TOKEN"] },
+    "release": { "strategy": "airgap-bundle", "rollback_required": true, "operator_action_required": true }
+  },
+  "edge": {
+    "mode": "air-gapped-edge",
+    "air_gapped": true,
+    "bundle": { "manifest": "bundle.json", "images": ["images/agennext-fabric-mcp.oci.tar", "images/opa.oci.tar", "images/openfga.oci.tar"], "schemas": ["schemas/mcp-coolify-edge-contract.schema.json"], "policies": ["policies/mcp-fabric.tar.gz"], "checksums_required": true, "sbom_required": true, "provenance_required": true },
+    "local_dependencies": { "registry_required": true, "policy_engine_required": true, "audit_sink_required": true, "public_network_required": false }
+  },
+  "evidence": { "required": ["commit_sha", "image_digest", "sbom", "signature", "provenance", "policy_decision", "health_check", "operator_approval", "audit_log", "rollback_artifact"] }
+}
