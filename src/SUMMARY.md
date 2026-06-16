@@ -15,6 +15,7 @@
 - [Fabric Model](fabric-model.md)
 - [Box Model](box-model.md)
 - [Agent Model](agent-model.md)
+- [Agent As Platform](agent-as-platform.md)
 - [Identity And Trust](identity-and-trust.md)
 - [Governance](governance.md)
 - [Protocols](protocols.md)
