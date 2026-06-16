@@ -1,0 +1,60 @@
+name: agennext-mcp-edge
+
+services:
+  agennext-fabric-mcp:
+    image: ${MCP_IMAGE:?}:${IMAGE_TAG:?}
+    restart: unless-stopped
+    environment:
+      MCP_SERVER_NAME: ${MCP_SERVER_NAME:?}
+      MCP_PROTOCOL_VERSION: ${MCP_PROTOCOL_VERSION:?2025-06-18}
+      MCP_TRANSPORT: streamable-http
+      MCP_HTTP_PATH: /mcp
+      FABRIC_DATABASE_URL: ${FABRIC_DATABASE_URL:?}
+      FABRIC_DATABASE_TOKEN: ${FABRIC_DATABASE_TOKEN:?}
+      OPA_URL: ${OPA_URL:?}
+      OPENFGA_API_URL: ${OPENFGA_API_URL:?}
+      AGENT_IDENTITY_ISSUER: ${AGENT_IDENTITY_ISSUER:?}
+      MCP_AUTH_TOKEN: ${MCP_AUTH_TOKEN:?}
+      AUDIT_SINK_URL: ${AUDIT_SINK_URL:?}
+      EDGE_MODE: air-gapped
+      PUBLIC_NETWORK_REQUIRED: "false"
+    ports:
+      - "8090:8090"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8090/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    depends_on:
+      - opa
+      - openfga
+
+  opa:
+    image: ${OPA_IMAGE:?}:${OPA_IMAGE_TAG:?}
+    restart: unless-stopped
+    command:
+      - run
+      - --server
+      - --addr=0.0.0.0:8181
+      - /policies
+    volumes:
+      - ./policies:/policies:ro
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8181/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  openfga:
+    image: ${OPENFGA_IMAGE:?}:${OPENFGA_IMAGE_TAG:?}
+    restart: unless-stopped
+    environment:
+      OPENFGA_DATASTORE_ENGINE: memory
+      OPENFGA_LOG_FORMAT: json
+    ports:
+      - "8081:8080"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8080/healthz"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
