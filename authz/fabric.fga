@@ -1,0 +1,23 @@
+model
+  schema 1.1
+
+type user
+
+type agent
+  relations
+    define owner: [user]
+    define operator: [user]
+
+type workspace
+  relations
+    define admin: [user]
+    define operator: [user]
+    define member: [user]
+
+type fabric_resource
+  relations
+    define owner: [workspace]
+    define reader: [user, agent]
+    define writer: [user, agent]
+    define can_read: reader or writer
+    define can_write: writer
