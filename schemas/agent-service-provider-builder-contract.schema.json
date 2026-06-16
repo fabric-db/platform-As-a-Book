@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fabric-db.github.io/platform-As-a-Book/schemas/agent-service-provider-builder-contract.schema.json",
+  "title": "Agent Service Provider Builder Contract",
+  "type": "object",
+  "required": ["id", "kind", "version", "status", "provider", "service", "builder_agent", "governance"],
+  "properties": {
+    "id": { "type": "string", "pattern": "^service-provider:[a-z0-9][a-z0-9-]*$" },
+    "kind": { "const": "agent.service-provider-builder.contract" },
+    "version": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$" },
+    "status": { "type": "string", "enum": ["draft", "reviewed", "approved", "published", "active", "suspended", "retired", "archived"] },
+    "provider": {
+      "type": "object",
+      "required": ["id", "name", "type"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^provider:[a-z0-9][a-z0-9-]*$" },
+        "name": { "type": "string", "minLength": 1 },
+        "type": { "type": "string", "enum": ["individual-expert", "team-provider", "vendor", "managed-service-provider", "marketplace-provider", "internal-platform-provider", "community-maintainer"] }
+      },
+      "additionalProperties": false
+    },
+    "service": {
+      "type": "object",
+      "required": ["name", "objective", "risk_class", "delivery_modes"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "objective": { "type": "string", "minLength": 1 },
+        "risk_class": { "type": "string", "enum": ["low", "medium", "high", "critical"] },
+        "delivery_modes": { "type": "array", "minItems": 1, "items": { "type": "string", "enum": ["advisory", "managed-operation", "api", "mcp-server", "agent-workflow", "private-deployment", "store-package", "central", "edge", "air-gapped-edge"] }, "uniqueItems": true }
+      },
+      "additionalProperties": false
+    },
+    "builder_agent": {
+      "type": "object",
+      "required": ["id", "requires_human_approval"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^agent:[a-z0-9][a-z0-9-]*$" },
+        "requires_human_approval": { "type": "boolean" }
+      },
+      "additionalProperties": false
+    },
+    "governance": {
+      "type": "object",
+      "required": ["policy_engine", "relationship_engine", "identity_required", "evidence_required"],
+      "properties": {
+        "policy_engine": { "type": "string", "enum": ["opa"] },
+        "relationship_engine": { "type": "string", "enum": ["openfga", "none"] },
+        "identity_required": { "type": "boolean" },
+        "evidence_required": { "type": "boolean" }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}
