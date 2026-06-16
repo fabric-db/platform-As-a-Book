@@ -1,0 +1,32 @@
+{
+  "$schema": "../schemas/agent-platform-contract.schema.json",
+  "id": "agent:fabric-repair",
+  "kind": "agent.platform.contract",
+  "version": "0.1.0",
+  "status": "draft",
+  "objective": "Detect failed fabric deployments and propose governed repair actions.",
+  "owner": "platform-ops",
+  "risk_class": "high",
+  "capabilities": [
+    "observe-deployment",
+    "read-evidence",
+    "propose-repair",
+    "write-evidence"
+  ],
+  "governance": {
+    "identity_required": true,
+    "policy_engine": "opa",
+    "relationship_engine": "openfga",
+    "human_gate_required": true
+  },
+  "delivery": {
+    "framework": "coolify",
+    "mode": "air-gapped-edge",
+    "mcp_contract": "examples/mcp-coolify-edge-contract.json"
+  },
+  "evidence": {
+    "decision_log_required": true,
+    "tool_call_log_required": true,
+    "deployment_log_required": true
+  }
+}
