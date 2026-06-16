@@ -1,0 +1,27 @@
+{
+  "$schema": "../schemas/agent-service-provider-store-item.schema.json",
+  "id": "store-item:fabric-repair-ops",
+  "kind": "agent.service-provider-store.item",
+  "version": "0.1.0",
+  "status": "draft",
+  "provider_contract": "examples/agent-service-provider-builder-contract.json",
+  "publisher": {
+    "id": "provider:platform-ops",
+    "verified": true
+  },
+  "listing": {
+    "name": "Fabric Repair Operations",
+    "category": "operations",
+    "summary": "Governed repair workflow for Fabric deployments.",
+    "risk_class": "high"
+  },
+  "delivery": {
+    "modes": ["central", "edge", "air-gapped-edge"],
+    "requires_operator_approval": true
+  },
+  "governance": {
+    "review_required": true,
+    "evidence_required": true,
+    "default_decision": "deny"
+  }
+}
