@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fabric-db.github.io/platform-As-a-Book/schemas/mcp-coolify-edge-contract.schema.json",
+  "title": "MCP Coolify Edge Delivery Contract",
+  "type": "object",
+  "required": ["id", "kind", "version", "status", "mcp", "governance", "coolify", "edge", "evidence"],
+  "properties": {
+    "id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$" },
+    "kind": { "const": "mcp.coolify.edge.contract" },
+    "version": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$" },
+    "status": { "type": "string", "enum": ["draft", "reviewed", "approved", "staged", "edge-bundled", "active", "probation", "suspended", "retired"] },
+    "mcp": {
+      "type": "object",
+      "required": ["protocol_version", "server", "transport", "capabilities", "tools"],
+      "properties": {
+        "protocol_version": { "type": "string" },
+        "server": {
+          "type": "object",
+          "required": ["name", "title", "version", "owner", "risk_class"],
+          "properties": {
+            "name": { "type": "string" },
+            "title": { "type": "string" },
+            "version": { "type": "string" },
+            "owner": { "type": "string" },
+            "risk_class": { "type": "string", "enum": ["low", "medium", "high", "critical"] }
+          },
+          "additionalProperties": false
+        },
+        "transport": {
+          "type": "object",
+          "required": ["modes", "auth_required"],
+          "properties": {
+            "modes": { "type": "array", "items": { "type": "string", "enum": ["stdio", "streamable-http"] }, "minItems": 1, "uniqueItems": true },
+            "auth_required": { "type": "boolean" },
+            "http_path": { "type": "string" }
+          },
+          "additionalProperties": false
+        },
+        "capabilities": { "type": "object" },
+        "tools": { "type": "array", "minItems": 1, "items": { "type": "object" } },
+        "resources": { "type": "array", "items": { "type": "object" } },
+        "prompts": { "type": "array", "items": { "type": "object" } }
+      },
+      "additionalProperties": false
+    },
+    "governance": { "type": "object" },
+    "coolify": { "type": "object" },
+    "edge": { "type": "object" },
+    "evidence": { "type": "object" }
+  },
+  "additionalProperties": false
+}
