@@ -1,0 +1,28 @@
+{
+  "$schema": "../schemas/agent-service-provider-builder-contract.schema.json",
+  "id": "service-provider:fabric-repair-ops",
+  "kind": "agent.service-provider-builder.contract",
+  "version": "0.1.0",
+  "status": "draft",
+  "provider": {
+    "id": "provider:platform-ops",
+    "name": "Platform Ops",
+    "type": "internal-platform-provider"
+  },
+  "service": {
+    "name": "Fabric Repair Operations",
+    "objective": "Diagnose failed Fabric deployments and propose governed repair actions.",
+    "risk_class": "high",
+    "delivery_modes": ["central", "edge", "air-gapped-edge"]
+  },
+  "builder_agent": {
+    "id": "agent:service-provider-builder",
+    "requires_human_approval": true
+  },
+  "governance": {
+    "policy_engine": "opa",
+    "relationship_engine": "openfga",
+    "identity_required": true,
+    "evidence_required": true
+  }
+}
